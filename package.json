@@ -25,5 +25,8 @@
 		"node",
 		"gomix",
 		"express"
-	]
+	],
+	"devDependencies": {
+		"dotenv": "^6.0.0"
+	}
 }
