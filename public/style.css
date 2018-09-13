@@ -11,6 +11,7 @@ body {
 
 h1 {
   font-weight: bold;
+  text-align: center;
 }
 
 .bold {
@@ -22,13 +23,21 @@ p {
 }
 
 form {
-  margin-bottom: 25px;
+  margin: 15px;
   padding: 15px;
   background-color: rgb(227, 165, 7);
-  display: inline-block;
-  width: 100%;
+  /* display: inline-block; */
+  min-width: 40vw;
   max-width: 340px;
   border-radius: 5px;
+}
+.forms {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.getPaths {
+  margin-left: 20px;
 }
 
 input {

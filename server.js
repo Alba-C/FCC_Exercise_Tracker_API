@@ -114,6 +114,10 @@ app.get("/api/exercise/log", (req, res) => {
 
 app.post("/api/exercise/new-user", (req, res) => {
   let username = req.body.username;
+  console.log("req.params.username", req.params.username);
+  console.log("req.body.username", req.body.username);
+  console.log("username", username);
+
   User.findOne({ username: username }, (err, doc) => {
     console.log("doc", doc);
 
