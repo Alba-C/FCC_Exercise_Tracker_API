@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/exercise/users", (req, res) => {
-  User.find({}, "_id username", (err, doc) => {
+  User.find({}, "_id username").exec((err, doc) => {
     res.json(doc);
   });
 });
@@ -48,19 +48,61 @@ app.get("/api/exercise/log", (req, res) => {
 
   console.log(req.query);
   console.log(req.params);
-  if (req.query.from)
-    User.findOne({ _id: _id }, "_id username log", (err, doc) => { 
-      console.log("doc", doc);
+  // if (req.query.from)
+  User.findOne(
+    {
+      _id: _id
+    },
+    "_id username log"
+  ).exec((err, doc) => {
+    if (doc == null) {
+      res.json({ error: "userId not found" });
+    } else if (limit && Number(limit) == NaN) {
+      console.log("typeof limit", typeof limit);
+      console.log("limit", limit);
 
-      doc == null
-        ? res.json({ error: "userId not found" })
-        : res.json({
-            _id: doc._id,
-            username: doc.username,
-            count: doc.log.length,
-            log: doc.log
-          });
-    });
+      res.json({ error: "limit must be a whole number" });
+    } else if (fromDate && new Date(fromDate) == "Invalid Date") {
+      res.json({
+        error: "From Date Format should be yyyy-mm-dd not " + fromDate
+      });
+    } else if (toDate && new Date(toDate) == "Invalid Date") {
+      res.json({
+        error: "To Date Format should be yyyy-mm-dd not " + toDate
+      });
+    } else {
+      if (fromDate && toDate) {
+        res.json({
+          _id: doc._id,
+          username: doc.username,
+          count: doc.log.slice(0, limit).length,
+          log: doc.log
+            .filter(
+              obj =>
+                new Date(obj.date) >= new Date(fromDate) &&
+                new Date(obj.date) <= new Date(toDate)
+            )
+            .slice(0, limit)
+        });
+      } else if (fromDate) {
+        res.json({
+          _id: doc._id,
+          username: doc.username,
+          count: doc.log.slice(0, limit).length,
+          log: doc.log
+            .filter(obj => new Date(obj.date) >= new Date(fromDate))
+            .slice(0, limit)
+        });
+      } else {
+        res.json({
+          _id: doc._id,
+          username: doc.username,
+          count: doc.log.slice(0, limit).length,
+          log: doc.log.slice(0, limit)
+        });
+      }
+    }
+  });
 });
 
 app.post("/api/exercise/new-user", (req, res) => {
@@ -254,7 +296,7 @@ let filterLog = log.filter(
     new Date(obj.date) >= new Date("2018-09-08") &&
     new Date(obj.date) <= new Date("2018-09-12")
 );
-console.log("filterLog: ", filterLog);
+// console.log("filterLog: ", filterLog);
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
