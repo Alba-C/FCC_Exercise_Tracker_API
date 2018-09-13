@@ -11,14 +11,15 @@
 
 <body>
   <div class="container">
-    <h1>Exercise tracker</h1>
-    <form action="/api/exercise/new-user" method="post">
+    <h1>Exercise Tracker API</h1>
+    <form action="/api/exercise/new-user" method="post" id="postNew">
       <h3>Create a New User</h3>
       <p><code>POST /api/exercise/new-user</code></p>
       <input id="uname" type="text" name="username" placeholder="username">
       <input type="submit" value="Submit">
     </form>
-    <form action="/api/exercise/add" method="post">
+
+    <form action="/api/exercise/add" method="post" id="postExercise">
       <h3>Add exercises</h3>
       <p><code>POST /api/exercise/add</code></p>
       <input id="uid" type="text" name="userId" placeholder="userId*" required>
@@ -27,14 +28,25 @@
       <input id="dat" type="date" name="date" placeholder="date (yyyy-mm-dd)">
       <input type="submit" value="Submit">
     </form>
+
     <p><strong>GET users's exercise log: </strong><code>GET /api/exercise/log?{userId}[&amp;from][&amp;to][&amp;limit]</code></p>
     <p><strong>{ }</strong> = required, <strong>[ ]</strong> = optional</p>
     <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
 
-    <form action="/api/exercise/log" method="get">
+    <form action="/api/exercise/log" method="get" id="getLog">
       <h3>Get Exercise Log</h3>
       <p><code>GET /api/exercise/log</code></p>
-      <input id="logUsrId" type="text" name="userId" placeholder="userId*">
+      <input id="logUsrId" type="text" name="userId" placeholder="userId*" required>
+      <input id="logFrom" type="date" name="from" placeholder="from date optional">
+      <input id="logTo" type="date" name="to" placeholder="to date optional">
+      <input id="logLimit" type="number" name="limit" placeholder="add number to limit results">
+      <input type="submit" value="Submit">
+    </form>
+
+    <form action="/api/exercise/users" method="get" id="getAllUsers">
+      <h3>Get All Users</h3>
+      <p><code>GET /api/exercise/users</code></p>
+
       <input type="submit" value="Submit">
     </form>
   </div>

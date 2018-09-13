@@ -29,13 +29,12 @@ app.use(bodyParser.json());
 
 app.use(express.static("public"));
 app.get("/", (req, res) => {
-  console.log("send index");
   res.sendFile(__dirname + "/views/index.html");
 });
 
 app.get("/api/exercise/users", (req, res) => {
   User.find({}, "_id username").exec((err, doc) => {
-    res.json(doc);
+    err ? console.log(err) : res.json(doc);
   });
 });
 
@@ -76,29 +75,37 @@ app.get("/api/exercise/log", (req, res) => {
           _id: doc._id,
           username: doc.username,
           count: doc.log.slice(0, limit).length,
-          log: doc.log
-            .filter(
-              obj =>
-                new Date(obj.date) >= new Date(fromDate) &&
-                new Date(obj.date) <= new Date(toDate)
-            )
-            .slice(0, limit)
+          log: limit
+            ? doc.log
+                .filter(
+                  obj =>
+                    new Date(obj.date) >= new Date(fromDate) &&
+                    new Date(obj.date) <= new Date(toDate)
+                )
+                .slice(0, limit)
+            : doc.log.filter(
+                obj =>
+                  new Date(obj.date) >= new Date(fromDate) &&
+                  new Date(obj.date) <= new Date(toDate)
+              )
         });
       } else if (fromDate) {
         res.json({
           _id: doc._id,
           username: doc.username,
           count: doc.log.slice(0, limit).length,
-          log: doc.log
-            .filter(obj => new Date(obj.date) >= new Date(fromDate))
-            .slice(0, limit)
+          log: Number(limit)
+            ? doc.log
+                .filter(obj => new Date(obj.date) >= new Date(fromDate))
+                .slice(0, limit)
+            : doc.log.filter(obj => new Date(obj.date) >= new Date(fromDate))
         });
       } else {
         res.json({
           _id: doc._id,
           username: doc.username,
           count: doc.log.slice(0, limit).length,
-          log: doc.log.slice(0, limit)
+          log: Number(limit) > 0 ? doc.log.slice(0, limit) : doc.log
         });
       }
     }
